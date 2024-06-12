@@ -14,5 +14,27 @@ const JsxHeading = () => {
     )
 }
 
+const RenderArraysAndObject = () => {
+    const arr = [1, 2, 3, 4, 5];
+    const obj = {
+        "name": "Yuvaraj",
+        "age": 21,
+        "status": "broken"
+    }
 
-ReactDOM.createRoot(document.getElementById("root")).render(<JsxHeading />);
+    const cars = ["BMW", "Audi", "Maruthi", "Jaguar"];
+
+    return (
+        <>
+            <p>I am rendering.</p>
+            {arr.map((element) => <p>{element}</p>)}
+            <ul>
+                {cars.map(element => <li>{element}</li>)}
+            </ul>
+
+        </>
+    )
+}
+
+
+ReactDOM.createRoot(document.getElementById("root")).render(<RenderArraysAndObject />);

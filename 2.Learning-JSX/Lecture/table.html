@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tables in HTML</title>
+
+    <!-- React CDN -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+
+    <!-- Babel CDN -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body>
+
+    <h1>This is table</h1>
+
+    <div id="root">
+
+    </div>
+    
+    <script type="text/babel">
+        const studentList = [
+            {
+                "name": "Yuvaraj",
+                "age": 21,
+                "mark": 98
+            }, 
+            {
+                "name": "Dhathva",
+                "age": 20,
+                "mark": 100
+            },
+            {
+                "name": "Jana",
+                "age": 5,
+                "mark": 90
+            }
+        ];
+
+        const TableList = () => {
+            return (
+                <>
+                    <table border="1">
+                        <thead> 
+                            <tr>
+                                <th>Name</th>    
+                                <th>Age</th>    
+                                <th>Mark</th>    
+                            </tr>
+                        </thead>
+
+
+                        <tbody>
+                            {studentList.map((student, index) => 
+                                <tr key={index}>
+                                    <td>{student.name}</td>    
+                                    <td>{student.age}</td>    
+                                    <td>{student.mark}</td>    
+                                </tr>
+                            )}   
+                        </tbody>
+                    </table>
+                </>
+            )
+        }
+
+        ReactDOM.createRoot(document.getElementById("root")).render(<TableList />);
+    </script>
+</body>
+</html>
