@@ -18,13 +18,74 @@
     <div id="root"></div>
 
     <script type="text/babel">
-      const Form = () => <></>;
+      let name = "";
+      let mark = 0;
 
-      const Result = () => <p></p>;
+      let markList = [];
+
+      let inputRef1 = React.createRef();
+      let inputRef2 = React.createRef();
+
+      function handleSubmit(e) {
+        e.preventDefault();
+
+        const studentName = inputRef1.current.value;
+        console.log(studentName, "studentNamestudentName");
+        const studentMark = inputRef2.current.value;
+        console.log(studentMark, "studentMarkstudentMark");
+
+        let studentMarkObj = {
+          studentName,
+          studentMark
+        } 
+
+        markList.push(studentMarkObj);
+        rootElement.render(<App />);
+
+        inputRef1.current.value = "";
+        inputRef2.current.value = 0;
+      }
+
+      const Form = () => 
+      <>
+        <form onSubmit={(e) => handleSubmit(e)}>
+            <input type="text" placeholder="Name" ref={inputRef1}/>
+            <input type="number" placeholder="Marks" ref={inputRef2} />
+
+            <button>Submit</button>
+        </form>
+      </>
+      ;
+
+      const Result = () => 
+        <> 
+          <table border="1">
+            <thead>
+              <tr>
+                <th>Student's Name</th>
+                <th>Mark</th>
+              </tr>
+            </thead>
+            <tbody>
+              {markList.map((value, index) =>
+                <>  
+                    <tr key={index}>
+                      <td>{value.studentName}</td>
+                      <td>{value.studentMark}</td>
+                    </tr>
+                </>
+              )}
+            </tbody>
+          </table> 
+        </>
+      ;
 
       const App = () => (
         <>
+          <h1>Student's Form </h1>
           <Form />
+
+          <br /> <br />
           <Result />
         </>
       );

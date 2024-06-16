@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <title>React App</title>
+</head>
+
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    let customers = [];
+    const capacity = 25;
+    let seatsLeft = 25;
+
+    const guestCountRef = React.createRef();
+    const primaryGuestNameRef = React.createRef();
+    const mobileNumberRef = React.createRef();
+
+    function handleSubmit(e) {
+      e.preventDefault();
+
+      const guestCount = parseInt(guestCountRef.current.value);
+      const primaryGuestName = primaryGuestNameRef.current.value;
+      const mobileNumber = mobileNumberRef.current.value;
+
+      const now = new Date();
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      const seconds = String(now.getSeconds()).padStart(2, '0');
+
+      const time = `${hours}:${minutes}:${seconds}`;
+
+      if (seatsLeft - guestCount >= 0) {
+        const customerDetails = {
+          guestCount,
+          primaryGuestName,
+          mobileNumber,
+          checkin: time,
+          checkout: '-',
+          status: 'Checked In'
+        };
+
+        customers.unshift(customerDetails);
+        seatsLeft -= guestCount;
+        renderApp();
+      } else {
+        alert("Already, restaurant is full.");
+      }
+    }
+
+    function handleCheckout(index) {
+      const now = new Date();
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      const seconds = String(now.getSeconds()).padStart(2, '0');
+
+      const time = `${hours}:${minutes}:${seconds}`;
+      customers[index].status = 'Served';
+      customers[index].checkout = time;
+      renderApp();
+    }
+
+    function handleRemove(index) {
+      seatsLeft += customers[index].guestCount;
+      customers.splice(index, 1);
+      renderApp();
+    }
+
+    const Form = () => (
+      <form onSubmit={handleSubmit}>
+        <input type="number" placeholder="Guest Count" ref={guestCountRef} required />
+        <input type="text" placeholder="Primary Guest Name" ref={primaryGuestNameRef} required />
+        <input type="text" placeholder="Mobile Number" ref={mobileNumberRef} required />
+        <br /><br />
+        <button type="submit">Add Entry</button>
+      </form>
+    );
+
+    const App = () => (
+      <div className="App" style={{ textAlign: "center" }}>
+        <div>
+          <h2>Total Capacity: {capacity}</h2>
+          <h2>Seats Left: {seatsLeft}</h2>
+        </div>
+        <Form />
+        <br /><br /><br />
+        <table border="1px" style={{ margin: "auto" }}>
+          <thead>
+            <tr>
+              <th>Count</th>
+              <th>Name</th>
+              <th>Phone</th>
+              <th>Check In</th>
+              <th>Check Out</th>
+              <th>Status</th>
+              <th>Remove Entry</th>
+            </tr>
+          </thead>
+          <tbody>
+            {customers.map((customer, i) => (
+              <tr key={i}>
+                <td>{customer.guestCount}</td>
+                <td>{customer.primaryGuestName}</td>
+                <td>{customer.mobileNumber}</td>
+                <td>{customer.checkin}</td>
+                <td>{customer.checkout}</td>
+                <td>
+                  {customer.status === 'Checked In' ? (
+                    <button onClick={() => handleCheckout(i)}>Click to Checkout</button>
+                  ) : (
+                    customer.status
+                  )}
+                </td>
+                <td><button onClick={() => handleRemove(i)}>Delete</button></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    );
+
+    function renderApp() {
+      const rootElement = ReactDOM.createRoot(document.getElementById("root"));
+      rootElement.render(<App />);
+    }
+
+    renderApp();
+  </script>
+</body>
+</html>

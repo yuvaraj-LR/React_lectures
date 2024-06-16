@@ -24,9 +24,6 @@
 
         let inputRef = React.createRef();
 
-        const [,,ref] = ["a", "b", "c"];
-        console.log(ref, 'refff.......');
-
         // function clickScore(clickedButtonScore) {
         //     if(wicket < 10) {
         //         scoreArray.push(clickedButtonScore);
@@ -94,7 +91,6 @@
             <>
                 {scoreArray.map((x, index) => 
                     <>
-                    {console.log(x, "x....")}
                         <div  key={index}>
                             {index % 6 == 0 ? <br /> : ""}
                             <span>{x == 0 ? <strong>.</strong> : x == "W" ? <span style={{color: "red"}}>W</span> : x.score}, &nbsp; &nbsp; {x.comment} &nbsp; &nbsp; &nbsp;</span>
