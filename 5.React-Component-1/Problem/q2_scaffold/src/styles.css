@@ -1,0 +1,36 @@
+/* Write code for your CSS here */
+
+.flex {
+    display: flex;
+}
+
+.flex_col {
+    flex-direction: column;
+}
+
+.flex_center {
+    align-items: center;
+    justify-content: center;
+}
+
+.flex_wrap {
+    flex-wrap: wrap;
+}
+
+li {
+    list-style-type: none;
+    margin: 1rem 0;
+}
+
+.bolder {
+    font-weight: 600;
+}
+
+button {
+    background-color: aqua;
+    border-radius: 5px;
+    padding: 10px 20px;
+    max-width: 100px;
+    width: 100%;
+    margin: 20px;
+}
