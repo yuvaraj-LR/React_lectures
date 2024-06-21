@@ -8,6 +8,17 @@ class App extends React.Component {
   }
 
   // create handler function here
+  handleDarkThemeClick = () => {
+    this.setState({
+      theme: "dark"
+    })
+  }
+
+  handleLightThemeClick = () => {
+    this.setState({
+      theme: "light"
+    })
+  }
 
   render() {
 
@@ -17,6 +28,9 @@ class App extends React.Component {
       // Add dynamic className to the div
       <div className={theme}>
         {/* Add the button element here */}
+
+        {theme === "light" ? <button onClick={this.handleDarkThemeClick}>Light theme</button> : <button onClick={this.handleLightThemeClick}>Dark theme</button>}
+
         <h2>Why We Explore - NASA</h2>
         <img
           src="https://res.cloudinary.com/dl26pbek4/image/upload/v1671686299/launch-pad-67650_1920_p6izup.jpg"
