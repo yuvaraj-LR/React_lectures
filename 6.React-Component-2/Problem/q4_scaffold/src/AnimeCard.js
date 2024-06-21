@@ -3,10 +3,14 @@ import { Component } from "react";
 // Complete the AnimeCard Component
 class AnimeCard extends Component {
   render() {
-    return <div className="anime-card">
-      <img src={} alt={} />
-        <p>{}</p>
-    </div>;
+    const {name, imagePath, i} = this.props;
+
+    return (
+    <div key={i} className="anime-card">
+      <img src={imagePath} alt={name} />
+        <p>{name}</p>
+    </div>
+    )
   }
 }
 
