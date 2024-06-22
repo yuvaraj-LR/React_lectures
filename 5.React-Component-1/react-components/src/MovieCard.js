@@ -1,56 +1,10 @@
 import React from "react";
 
 class MovieCard extends React.Component {
-
-    constructor() {
-        super()
-        this.state = {
-            title:"The Avengers",
-            plot: "Earth's mightiest heroes must come together and learn to fight as a team if they are going to stop the mischievous Loki and his alien army from enslaving humanity.",
-            price: 199,
-            rating: 5,
-            starCount: 0,
-            isFav: false,
-            isInAddedCart: false,
-        }
-        // this.increaseStar = this.increaseStar.bind(this)
-        // this.decreaseStar = this.decreaseStar.bind(this)
-    }
-
-    increaseStar = () => {
-        // Form 1
-        // this.setState({
-        //     starCount: this.state.starCount + 0.5
-        // })
-
-        // Form 2
-        this.setState((prevState) => {
-            return {
-                starCount:prevState.starCount + 0.5
-            }
-        }) 
-    }
-
-    decreaseStar = () => {
-        this.setState({
-            thisstarCount: this.state.starCount - 0.5
-        })
-    }
-
-    handleFavouriteClick = () => {
-        this.setState({
-            isFav: !this.state.isFav
-        })
-    }
-
-    handleCartClick = () => {
-        this.setState({
-            isInAddedCart: !this.state.isInAddedCart
-        })
-    }
-
     render() {
-        const {title, plot, price, rating, starCount, isFav, isInAddedCart} = this.state;
+        const {title, plot, price, rating, starCount, isFav, isInAddedCart} = this.props.movie;
+        const {addStars, removeStars} = this.props;
+        console.log(addStars, "starsss...");
 
         return (
             <>
@@ -69,9 +23,9 @@ class MovieCard extends React.Component {
                                 <div className="rating">{rating}</div>
 
                                 <div className="star-dis">
-                                    <img className="str-btn" alt="Decrease" src="https://cdn-icons-png.flaticon.com/128/2801/2801932.png" onClick={this.decreaseStar} />
+                                    <img className="str-btn" alt="Decrease" src="https://cdn-icons-png.flaticon.com/128/2801/2801932.png" onClick={() => removeStars(this.props.movie)} />
                                     <img className="stars" alt="stars"  src="https://cdn-icons-png.flaticon.com/128/2107/2107957.png" />
-                                    <img className="str-btn" alt="increase" src="https://cdn-icons-png.flaticon.com/128/2997/2997933.png" onClick={this.increaseStar} />
+                                    <img className="str-btn" alt="increase" src="https://cdn-icons-png.flaticon.com/128/2997/2997933.png" onClick={() => addStars(this.props.movie)} />
                                     <span className="starCount">{starCount}</span>
                                 </div>
                                 
