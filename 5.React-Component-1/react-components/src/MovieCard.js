@@ -3,8 +3,7 @@ import React from "react";
 class MovieCard extends React.Component {
     render() {
         const {title, plot, price, rating, starCount, isFav, isInAddedCart} = this.props.movie;
-        const {addStars, removeStars} = this.props;
-        console.log(addStars, "starsss...");
+        const {addStars, removeStars, onClickFav, onClickCart} = this.props;
 
         return (
             <>
@@ -28,12 +27,10 @@ class MovieCard extends React.Component {
                                     <img className="str-btn" alt="increase" src="https://cdn-icons-png.flaticon.com/128/2997/2997933.png" onClick={() => addStars(this.props.movie)} />
                                     <span className="starCount">{starCount}</span>
                                 </div>
-                                
-                                {/* {isFav ? <button className="unfavourite-btn" onClick={() => this.favourite(false)} >Unfavourite</button> : <button className="favourite-btn" onClick={() => this.favourite(true)}>Favourite</button>} */}
 
-                                <button className={isFav ? "unfavourite-btn" : "favourite-btn"} onClick={this.handleFavouriteClick}>{isFav ? "unfavourite" : "favourite"}</button>
+                                <button className={isFav ? "unfavourite-btn" : "favourite-btn"} onClick={() => onClickFav(this.props.movie)}>{isFav ? "unfavourite" : "favourite"}</button>
 
-                                <button className={isInAddedCart ? "unfavourite-btn" : "cart-btn"} onClick={this.handleCartClick}>{isInAddedCart ? "View Cart" : "Add Cart"}</button>
+                                <button className={isInAddedCart ? "unfavourite-btn" : "cart-btn"} onClick={() => onClickCart(this.props.movie)}>{isInAddedCart ? "View Cart" : "Add Cart"}</button>
 
                             </div>
                         </div>
