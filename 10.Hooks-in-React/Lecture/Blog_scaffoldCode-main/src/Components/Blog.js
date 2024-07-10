@@ -1,25 +1,52 @@
-import {useState, useEffect} from "react";
+import {useState, useEffect, useRef, useReducer} from "react";
+
+function blogsUsingReducer(state, action) {
+    console.log(action, "action....");
+    switch (action.type) {
+        case "ADD":
+            return [action.blog, ...state];
+        case "REMOVE":
+            return state.filter((blog, index) => action.index !== index);
+        default:
+            return [];
+    }
+}
 
 //Blogging App using Hooks
 export default function Blog(){
 
-    // const [blogTitle, onEnterBlogTitle] = useState();
-    // const [blogDesc, onEnterBlogDesc] = useState();
-
     const [formData, setFormData] = useState({title: "", desc: ""});
-    const [blogs, setBlog] = useState([]);
+    // const [blogs, setBlog] = useState([]);
+    const titleInput = useRef(null);
+
+    const [blogs, dispatch] = useReducer(blogsUsingReducer, []);
+
+    useEffect(() => {
+        titleInput.current.focus();
+    }, [])
+
+    useEffect(() => {
+        if(blogs.length && blogs[0].title) {
+            document.title = blogs[0].title;
+        } else {
+            document.title = "No blogs"
+        }
+    }, [blogs])
     
     //Passing the synthetic event as argument to stop refreshing the page on submit
     function handleSubmit(e){
         e.preventDefault();
+        // setBlog([{title: formData.title, desc: formData.desc}, ...blogs]);
+        dispatch({type: "ADD",blog:{title: formData.title, desc: formData.desc}});
 
-        setBlog([{title: formData.title, desc: formData.desc}, ...blogs]);
-        formData.title = "";
-        formData.desc = "";
+        setFormData({title: "", desc: ""});
+        titleInput.current.focus();
+        // document.title = formData.title;
     }
 
     function handleDelete(i) {
-        setBlog(blogs.filter((blog, index) => i !== index));
+        // setBlog(blogs.filter((blog, index) => i !== index));\
+        dispatch({type: "REMOVE",index: i})
     }
 
     return(
@@ -35,12 +62,12 @@ export default function Blog(){
 
                 {/* Row component to create a row for first input field */}
                 <Row label="Title">
-                        <input className="input" id="title" onChange={(e) => setFormData({title: e.target.value, desc: formData.desc})} placeholder="Enter the Title of the Blog here.." />
+                        <input className="input" id="title" onChange={(e) => setFormData({title: e.target.value, desc: formData.desc})} placeholder="Enter the Title of the Blog here.." ref={titleInput}/>
                 </Row >
 
                 {/* Row component to create a row for Text area field */}
                 <Row label="Content">
-                        <textarea className="input content" id="content" onChange={(e) => setFormData({title: formData.title, desc: e.target.value})} placeholder="Content of the Blog goes here.." />
+                        <textarea className="input content" id="content" onChange={(e) => setFormData({title: formData.title, desc: e.target.value})} placeholder="Content of the Blog goes here.." required />
                 </Row >
 
                 {/* Button to submit the blog */}            
