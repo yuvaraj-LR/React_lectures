@@ -1,8 +1,33 @@
+import { useState, useEffect } from "react";
 
-// Complete the following hook
 const useFetch = (url) => {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
   const getJoke = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch(url);
+      const result = await response.json();
+      setData(result);
+    } catch (err) {
+      setError(err);
+    } finally {
+      setLoading(false);
+    }
   };
-  //It should return data returned from fetch, loading, error and getJoke
+
+  useEffect(() => {
+    getJoke();
+  }, [url]);
+
+  return {
+    data,
+    loading,
+    error,
+    getJoke
+  };
 };
-// export the useFetch hook as a default export
+
+export default useFetch;
