@@ -17,33 +17,21 @@ const reducer = (state, action) => {
         expenses: state.expenses.filter((expense) => expense.id !== payload.id)
       };
     }
-    //add logic for updating the expense here
     case "UPDATE_EXPENSE": {
-      state.expenses.filter((expense) => expense.id === payload.id).text = payload.text;
-      state.expenses.filter((expense) => expense.id === payload.id).amount = payload.amount;
-
+      const expensesDuplicate = state.expenses;
+      expensesDuplicate[payload.expensePos] = payload.expense;
       return {
-        state
-      }
+        expenses: expensesDuplicate
+      };
     }
-    
     default:
       return state;
   }
 };
-// Use proper state management for populating the form in the expenseForm component on clicking the edit icon in the Transaction component
-
-
 
 function App() {
   const [state, dispatch] = useReducer(reducer, { expenses: [] });
-  
-  useEffect(() => {
-    const getExpense = () => {
-
-    }
-  }, [state])
-
+  const [expenseToUpdate, setExpenseToUpdate] = useState(null);
 
   const addExpense = (expense) => {
     dispatch({ type: "ADD_EXPENSE", payload: { expense } });
@@ -52,27 +40,42 @@ function App() {
   const deleteExpense = (id) => {
     dispatch({ type: "REMOVE_EXPENSE", payload: { id } });
   };
-  // Add dispatch function for updation
+
+  const resetExpenseToUpdate = () => {
+    setExpenseToUpdate(null);
+  };
+
   const updateExpense = (expense) => {
-    dispatch({ type: "UPDATE_EXPENSE", payload: { expense } });
-  }
+    const expensePos = state.expenses
+      .map(function (exp) {
+        return exp.id;
+      })
+      .indexOf(expense.id);
+
+    if (expensePos === -1) {
+      return false;
+    }
+
+    dispatch({ type: "UPDATE_EXPENSE", payload: { expensePos, expense } });
+    return true;
+  };
 
   return (
     <>
       <h2 className="mainHeading">Expense Tracker</h2>
       <div className="App">
-        <ExpenseForm 
-        addExpense={addExpense} 
-        // Pass the props for populating the form with expense text and amount
-        
+        <ExpenseForm
+          addExpense={addExpense}
+          expenseToUpdate={expenseToUpdate}
+          updateExpense={updateExpense}
+          resetExpenseToUpdate={resetExpenseToUpdate}
         />
         <div className="expenseContainer">
           <ExpenseInfo expenses={state.expenses} />
           <ExpenseList
             expenses={state.expenses}
             deleteExpense={deleteExpense}
-            // Pass props to update a transacation
-            
+            changeExpenseToUpdate={setExpenseToUpdate}
           />
         </div>
       </div>

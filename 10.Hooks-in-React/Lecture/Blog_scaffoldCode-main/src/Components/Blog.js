@@ -1,4 +1,6 @@
 import {useState, useEffect, useRef, useReducer} from "react";
+import { db } from "../firebaseInit";
+import { collection, addDoc, doc, setDoc, getDocs } from "firebase/firestore"; 
 
 function blogsUsingReducer(state, action) {
     console.log(action, "action....");
@@ -20,6 +22,25 @@ export default function Blog(){
     const titleInput = useRef(null);
 
     const [blogs, dispatch] = useReducer(blogsUsingReducer, []);
+    const [blogList, setBlog] = useState([]);
+
+    useEffect(() => {
+        async function fetchData() {
+            const snapShot = await getDocs(collection(db, "blogs"));
+
+            const blogs = snapShot.docs.map((doc) => {
+                return {
+                    id: doc.id,
+                    ...doc.data()
+                }
+            })
+
+            console.log(blogs, "blogss...");
+            setBlog(blogs);
+        }
+
+        fetchData()
+    }, [])
 
     useEffect(() => {
         titleInput.current.focus();
@@ -34,10 +55,25 @@ export default function Blog(){
     }, [blogs])
     
     //Passing the synthetic event as argument to stop refreshing the page on submit
-    function handleSubmit(e){
+    async function handleSubmit(e){
         e.preventDefault();
         // setBlog([{title: formData.title, desc: formData.desc}, ...blogs]);
-        dispatch({type: "ADD",blog:{title: formData.title, desc: formData.desc}});
+
+        const blogCollection = doc(collection(db, "blogs"))
+
+        // Add a new document with a generated id.
+        await setDoc(blogCollection, {
+            title: formData.title, 
+            desc: formData.desc
+        });
+
+        // Add a new document with a generated id.
+        // const docRef = await addDoc(collection(db, "blogs"), {
+        //     title: formData.title, 
+        //     desc: formData.desc
+        // });
+
+        // dispatch({type: "ADD",blog:{title: formData.title, desc: formData.desc}});
 
         setFormData({title: "", desc: ""});
         titleInput.current.focus();
@@ -62,12 +98,12 @@ export default function Blog(){
 
                 {/* Row component to create a row for first input field */}
                 <Row label="Title">
-                        <input className="input" id="title" onChange={(e) => setFormData({title: e.target.value, desc: formData.desc})} placeholder="Enter the Title of the Blog here.." ref={titleInput}/>
+                        <input className="input" id="title" onChange={(e) => setFormData({title: e.target.value, desc: formData.desc})} placeholder="Enter the Title of the Blog here.." ref={titleInput} value={formData.title}/>
                 </Row >
 
                 {/* Row component to create a row for Text area field */}
                 <Row label="Content">
-                        <textarea className="input content" id="content" onChange={(e) => setFormData({title: formData.title, desc: e.target.value})} placeholder="Content of the Blog goes here.." required />
+                        <textarea className="input content" id="content" onChange={(e) => setFormData({title: formData.title, desc: e.target.value})} placeholder="Content of the Blog goes here.." required value={formData.desc}/>
                 </Row >
 
                 {/* Button to submit the blog */}            
@@ -80,7 +116,7 @@ export default function Blog(){
         {/* Section where submitted blogs will be displayed */}
         <h2> Blogs </h2>
 
-        {blogs.map((blog, i) => (
+        {blogList.map((blog, i) => (
             <div className="blog" key={i}>
                 <h3>{blog.title}</h3>
                 <p>{blog.desc}</p>
