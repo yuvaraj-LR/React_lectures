@@ -1,9 +1,8 @@
 import {useState, useEffect, useRef, useReducer} from "react";
 import { db } from "../firebaseInit";
-import { collection, addDoc, doc, setDoc, getDocs } from "firebase/firestore"; 
+import { collection, addDoc, doc, setDoc, getDocs, deleteDoc, onSnapshot } from "firebase/firestore"; 
 
 function blogsUsingReducer(state, action) {
-    console.log(action, "action....");
     switch (action.type) {
         case "ADD":
             return [action.blog, ...state];
@@ -25,21 +24,33 @@ export default function Blog(){
     const [blogList, setBlog] = useState([]);
 
     useEffect(() => {
-        async function fetchData() {
-            const snapShot = await getDocs(collection(db, "blogs"));
+        // async function fetchData() {
+        //     const snapShot = await getDocs(collection(db, "blogs"));
 
+        //     const blogs = snapShot.docs.map((doc) => {
+        //         return {
+        //             id: doc.id,
+        //             ...doc.data()
+        //         }
+        //     })
+
+        //     console.log(blogs, "blogss...");
+        //     setBlog(blogs);
+        // }
+
+        // fetchData()
+
+        const unSub = onSnapshot(collection(db, "blogs"), (snapShot) => {
             const blogs = snapShot.docs.map((doc) => {
                 return {
                     id: doc.id,
                     ...doc.data()
                 }
             })
-
+    
             console.log(blogs, "blogss...");
             setBlog(blogs);
-        }
-
-        fetchData()
+        })
     }, [])
 
     useEffect(() => {
@@ -82,7 +93,15 @@ export default function Blog(){
 
     function handleDelete(i) {
         // setBlog(blogs.filter((blog, index) => i !== index));\
-        dispatch({type: "REMOVE",index: i})
+
+        const blog = blogList.filter((blog, index) => i === blog.id);
+
+        async function delDoc() {
+            await deleteDoc(doc(db, "blogs", blog.id))
+        }
+        delDoc();
+
+        dispatch({type: "REMOVE",index: blog.i})
     }
 
     return(
@@ -122,7 +141,7 @@ export default function Blog(){
                 <p>{blog.desc}</p>
 
                 <div className="blog-btn">
-                    <button onClick={() => handleDelete(i)} className="remove">Delete</button>
+                    <button onClick={() => handleDelete(blog.id)} className="remove">Delete</button>
                 </div>
             </div>
         ))}
