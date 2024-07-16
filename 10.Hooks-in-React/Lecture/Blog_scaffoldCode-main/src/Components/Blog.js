@@ -7,7 +7,7 @@ function blogsUsingReducer(state, action) {
         case "ADD":
             return [action.blog, ...state];
         case "REMOVE":
-            return state.filter((blog, index) => action.index !== index);
+            return state.filter((blog, index) => action.index !== blog.id);
         default:
             return [];
     }
@@ -91,17 +91,11 @@ export default function Blog(){
         // document.title = formData.title;
     }
 
-    function handleDelete(i) {
-        // setBlog(blogs.filter((blog, index) => i !== index));\
+    async function handleDelete(id) {
+        const docRef = doc(db, "blogs", id);
+        await deleteDoc(docRef);
 
-        const blog = blogList.filter((blog, index) => i === blog.id);
-
-        async function delDoc() {
-            await deleteDoc(doc(db, "blogs", blog.id))
-        }
-        delDoc();
-
-        dispatch({type: "REMOVE",index: blog.i})
+        dispatch({type: "REMOVE",index: id})
     }
 
     return(
